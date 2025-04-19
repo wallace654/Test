@@ -2,68 +2,55 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>My Cool Website</title>
+  <title>Catspiration</title>
   <style>
     body {
-      font-family: 'Courier New', monospace;
-      background: #111;
-      color: #f2f2f2;
-      padding: 40px;
-      transition: background 2s;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #fefefe;
+      padding: 20px;
     }
-    h1 {
-      font-size: 3em;
+    img {
+      max-width: 80%;
+      height: auto;
+      border-radius: 10px;
     }
-    .fade {
-      opacity: 0.2;
+    blockquote {
+      font-size: 1.5em;
+      margin-top: 20px;
+      color: #444;
     }
-    .glitch {
-      color: #ff3cac;
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <h1>Welcome to My Cool Website</h1>
-  <p>This website is totally normal. Nothing weird is going to happen.</p>
-  <p>Just hang out and enjoy the content. Maybe grab a coffee.</p>
-  <p>Everything here is stable. Permanent. Trustworthy.</p>
+
+  <h1>Random Catspiration</h1>
+  <img id="catImage" src="" alt="Random Cat">
+  <blockquote id="quote">Loading inspiration...</blockquote>
+  <button onclick="loadCatAndQuote()">Refresh</button>
 
   <script>
-    const words = document.querySelectorAll("p, h1");
-    const glitchChars = "!@#$%^&*()_+=-[]{}|;:',.<>?/";
+    async function loadCatAndQuote() {
+      // Get a random cat image
+      const catRes = await fetch('https://api.thecatapi.com/v1/images/search');
+      const catData = await catRes.json();
+      document.getElementById('catImage').src = catData[0].url;
 
-    function corruptText(text) {
-      return text.split('').map(char => {
-        if (Math.random() < 0.08) {
-          return glitchChars[Math.floor(Math.random() * glitchChars.length)];
-        }
-        return char;
-      }).join('');
+      // Get a random quote
+      const quoteRes = await fetch('https://zenquotes.io/api/random');
+      const quoteData = await quoteRes.json();
+      document.getElementById('quote').innerText = `"${quoteData[0].q}" — ${quoteData[0].a}`;
     }
 
-    function fadeWords() {
-      words.forEach(el => {
-        if (Math.random() < 0.3) {
-          el.textContent = corruptText(el.textContent);
-        }
-        if (Math.random() < 0.1) {
-          el.classList.add('fade');
-        }
-        if (Math.random() < 0.05) {
-          el.remove();
-        }
-      });
-
-      if (document.body.children.length <= 1) {
-        document.body.style.background = '#000';
-        let end = document.createElement('p');
-        end.textContent = "There's nothing left.";
-        end.className = 'glitch';
-        document.body.appendChild(end);
-      }
-    }
-
-    setInterval(fadeWords, 3000);
+    // Load one on first visit
+    loadCatAndQuote();
   </script>
+
 </body>
 </html>
